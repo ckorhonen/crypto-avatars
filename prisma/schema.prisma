@@ -1,0 +1,200 @@
+// This is your Prisma schema file
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User model for wallet-based authentication
+model User {
+  id            String    @id @default(cuid())
+  walletAddress String    @unique
+  blockchain    String    // ethereum, polygon, bsc, solana, bitcoin
+  username      String?   @unique
+  email         String?   @unique
+  profileImage  String?
+  bio           String?
+  isVerified    Boolean   @default(false)
+  
+  // Timestamps
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  lastLoginAt   DateTime?
+  
+  // Relations
+  avatars       Avatar[]
+  sessions      UserSession[]
+  
+  @@map("users")
+}
+
+// Avatar model for NFT-style avatars
+model Avatar {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  imageUrl    String
+  blockchain  String   // ethereum, polygon, bsc, solana, bitcoin
+  
+  // NFT-like properties
+  traits      Json     @default("{}")
+  rarity      String   @default("common") // common, uncommon, rare, epic, legendary
+  tokenId     String?  // Optional: actual NFT token ID if minted
+  contractAddress String? // Optional: contract address if minted
+  
+  // Metadata
+  metadata    Json     @default("{}")
+  tags        String[] @default([])
+  
+  // Ownership and timestamps
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Indexes for performance
+  @@index([userId])
+  @@index([blockchain])
+  @@index([rarity])
+  @@index([createdAt])
+  @@map("avatars")
+}
+
+// User sessions for JWT token management
+model UserSession {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  token     String   @unique
+  expiresAt DateTime
+  isActive  Boolean  @default(true)
+  
+  // Session metadata
+  ipAddress String?
+  userAgent String?
+  device    String?
+  location  String?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@index([userId])
+  @@index([token])
+  @@index([expiresAt])
+  @@map("user_sessions")
+}
+
+// Analytics and tracking
+model UserActivity {
+  id        String   @id @default(cuid())
+  userId    String
+  
+  action    String   // login, logout, create_avatar, update_avatar, etc.
+  resource  String?  // avatar_id, user_id, etc.
+  metadata  Json     @default("{}")
+  
+  ipAddress String?
+  userAgent String?
+  
+  createdAt DateTime @default(now())
+  
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+  @@map("user_activities")
+}
+
+// System configuration and settings
+model SystemConfig {
+  id    String @id @default(cuid())
+  key   String @unique
+  value Json
+  
+  description String?
+  isActive    Boolean @default(true)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("system_config")
+}
+
+// Rate limiting and security
+model RateLimit {
+  id        String   @id @default(cuid())
+  key       String   @unique // IP address or user ID
+  requests  Int      @default(0)
+  resetTime DateTime
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@index([key])
+  @@index([resetTime])
+  @@map("rate_limits")
+}
+
+// Audit log for important actions
+model AuditLog {
+  id       String @id @default(cuid())
+  
+  action   String // CREATE, UPDATE, DELETE, LOGIN, etc.
+  resource String // users, avatars, etc.
+  resourceId String?
+  
+  userId   String?
+  ipAddress String?
+  userAgent String?
+  
+  oldValues Json?
+  newValues Json?
+  metadata  Json @default("{}")
+  
+  createdAt DateTime @default(now())
+  
+  @@index([action])
+  @@index([resource])
+  @@index([userId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+// Blockchain transaction tracking (optional)
+model BlockchainTransaction {
+  id              String   @id @default(cuid())
+  
+  blockchain      String
+  transactionHash String   @unique
+  blockNumber     Int?
+  
+  fromAddress     String
+  toAddress       String?
+  value           String?  // Transaction value in wei/lamports
+  gasUsed         String?
+  gasPrice        String?
+  
+  // Related entities
+  userId          String?
+  avatarId        String?
+  
+  status          String   @default("pending") // pending, confirmed, failed
+  confirmations   Int      @default(0)
+  
+  metadata        Json     @default("{}")
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  @@index([blockchain])
+  @@index([transactionHash])
+  @@index([userId])
+  @@index([status])
+  @@map("blockchain_transactions")
+}
