@@ -1,0 +1,55 @@
+name = "crypto-avatars"
+main = "src/index.ts"
+compatibility_date = "2024-01-15"
+node_compat = true
+
+[env.production]
+name = "crypto-avatars"
+route = "crypto-avatars.workers.dev/*"
+
+[env.staging]
+name = "crypto-avatars-staging"
+
+# KV Namespaces - Update IDs after creating namespaces
+# Run: wrangler kv:namespace create "AVATAR_CACHE"
+[[kv_namespaces]]
+binding = "AVATAR_CACHE"
+id = "your-avatar-kv-namespace-id"
+preview_id = "your-avatar-preview-kv-namespace-id"
+
+[[kv_namespaces]]
+binding = "SESSION_CACHE"
+id = "your-session-kv-namespace-id"
+preview_id = "your-session-preview-kv-namespace-id"
+
+[[kv_namespaces]]
+binding = "NONCE_CACHE"
+id = "your-nonce-kv-namespace-id"
+preview_id = "your-nonce-preview-kv-namespace-id"
+
+[[kv_namespaces]]
+binding = "RATE_LIMIT_CACHE"
+id = "your-rate-limit-kv-namespace-id"
+preview_id = "your-rate-limit-preview-kv-namespace-id"
+
+# Environment Variables
+[vars]
+ENVIRONMENT = "production"
+DEFAULT_AVATAR_BASE_URL = "https://api.dicebear.com/7.x/identicon/svg"
+MAX_AVATAR_SIZE = "2048"
+
+[env.staging.vars]
+ENVIRONMENT = "staging"
+
+# Secrets (set via: wrangler secret put <SECRET_NAME>)
+# Required secrets:
+# - ALCHEMY_API_KEY: For ENS resolution
+# - OPENSEA_API_KEY: For OpenSea NFT avatars
+# - LENS_API_ENDPOINT: Lens Protocol API URL
+# - FARCASTER_API_KEY: Farcaster API access
+
+[build]
+command = "npm install && npm run build"
+
+[build.upload]
+format = "service-worker"
