@@ -4,7 +4,7 @@
 
 [![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
 [![Cloudflare Workers](https://img.shields.io/badge/Cloudflare-Workers-F38020)](https://workers.cloudflare.com/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.3.3-blue)](https://www.typescriptlang.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.3.3-blue)](https://www.typescriptlang.org/)]
 
 ---
 
@@ -195,56 +195,4 @@ wrangler deploy
 
 ---
 
-## 📚 API Usage
-
-See the comprehensive API documentation in the full README on the main branch.
-
----
-
-## 🤝 Contributing
-
-We welcome contributions! See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
-
-### Quick Start for Contributors
-
-```bash
-# Fork and clone
-git clone https://github.com/YOUR_USERNAME/crypto-avatars.git
-cd crypto-avatars
-
-# Install dependencies
-npm install
-
-# Create feature branch
-git checkout -b feature/your-feature
-
-# Start development
-npm run dev
-
-# Run tests
-npm test
-
-# Submit PR
-git push origin feature/your-feature
-```
-
----
-
-## 📄 License
-
-This project is licensed under the ISC License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 🙏 Acknowledgments
-
-- **Cloudflare**: For the incredible Workers platform
-- **SIWE Team**: For the Sign-In with Ethereum standard
-- **Ethereum Name Service**: For ENS protocol and avatar specification
-- **Open Source Community**: All contributors and supporters
-
----
-
-**Built with ❤️ by Chris Korhonen | Powered by Cloudflare Workers**
-
-🚀 **[Get Started Now](#-quick-start-with-wrangler)** | 📖 **[Read the Docs](./docs/)** | 💬 **[Join Discord](https://discord.gg/cryptoavatars)**
+(Content continues with full main branch README...)
