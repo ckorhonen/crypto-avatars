@@ -1,0 +1,3 @@
+Merge conflicts resolved on 2025-10-16
+All conflicts between main (66cb61b11) and cloudflare-workers-migration resolved.
+PR changes take precedence for this complete architectural migration.
